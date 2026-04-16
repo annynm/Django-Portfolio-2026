@@ -1,0 +1,18 @@
+{% load static %}
+<header>
+  <div>
+    <img
+      src="{% static 'brand/logo.svg' %}"
+      alt="Annyn's bird style logo, the bird is a green and white love bird with an orange crown"
+      class="logo-pic"
+    />
+    <img src="{% static 'brand/name.svg' %}" alt="Annyn Matheson" />
+  </div>
+  <nav>
+    <ul>
+      {% for link in nav_links %}
+      <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+</header>

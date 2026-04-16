@@ -1,0 +1,18 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  {% include 'core/partials/head.html' %}
+
+  <body>
+    {% include 'core/partials/background.html' %}
+    {% include 'core/partials/header.html' %}
+
+    <main>
+      {% block foreground %}
+        {% include 'core/partials/foreground.html' %}
+      {% endblock %}
+    </main>
+
+    {% include 'core/partials/footer.html' %}
+  </body>
+</html>

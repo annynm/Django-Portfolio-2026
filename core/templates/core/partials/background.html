@@ -1,0 +1,15 @@
+{% load static %}
+<div class="bg-image-container">
+  <img src="{{ bg_image_url }}" alt="Background" class="bg-image" />
+</div>
+
+<div class="bg-box1">
+  <div
+    class="bg-box-left"
+    style="background-color: {{ box_left_color }};"
+  ></div>
+  <div class="bg-box-right" style="background-color: {{ box_right_color }};">
+    {% block background_extra_content %}
+    {% endblock %}
+  </div>
+</div>
