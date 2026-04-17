@@ -1,11 +1,4 @@
-/*RESET*/
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/*RESET*/
+/* ========== RESET ========== */
 * {
   margin: 0;
   padding: 0;
@@ -15,12 +8,15 @@
 html {
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
+  height: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  /* Ensure body takes full viewport height for centering */
+  overflow: hidden;
+  font-family: sans-serif;
+  height: 100%;
 }
 
 main {
@@ -194,9 +190,35 @@ template {
   display: none;
 }
 
-/* Background Image Container - behind everything */
-.bg-image-container {
-  position: fixed;
+/* ========== SINGLE PAGE CONTAINER ========== */
+.sections-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+/* ========== VIEW SECTIONS ========== */
+.view-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+}
+
+.view-section.active {
+  z-index: 10;
+}
+
+/* ========== BACKGROUND IMAGE ========== */
+.view-section .bg-image-container {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -205,18 +227,101 @@ template {
   overflow: hidden;
 }
 
-.bg-image {
+.view-section .bg-image {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 50px);
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* Fix for mysterious white bar caused by ::before pseudo-element */
+img.bg-image::before {
+  display: none;
+  content: none;
+}
+
+/* ========== COLORED BOXES ========== */
+.view-section .bg-box1 {
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 140%;
+  display: flex;
+  align-items: flex-start;
+  transform: rotate(-10deg);
+  z-index: -1;
+}
+
+.view-section .bg-box-left {
+  width: 30%;
+  height: 25vh;
+  margin-top: 18vh;
+}
+
+.view-section .bg-box-right {
+  width: 70%;
+  height: 70vh;
+}
+
+/* ========== FOREGROUND LAYER ========== */
+.foreground-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: auto;
-  min-height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
 }
 
-/* Header */
+.foreground-content {
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  width: 100%;
+  padding: 2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== SLIDE ANIMATIONS ========== */
+.view-section.exit-up {
+  animation: slideUp 0.5s forwards;
+}
+
+.view-section.exit-down {
+  animation: slideDown 0.5s forwards;
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+}
+
+/* ========== HEADER ========== */
 header {
   position: fixed;
   width: 1000px;
@@ -226,7 +331,7 @@ header {
   margin: 0;
   background: transparent;
   transform: rotate(-10deg);
-  z-index: 10;
+  z-index: 20;
 }
 
 header>div {
@@ -243,14 +348,12 @@ header>div>img:last-child {
   display: block;
 }
 
-/* Logo */
 .logo-pic {
   width: 64px;
   transform: rotate(10deg);
   margin-left: 10px;
 }
 
-/* Navigation */
 nav {
   margin-left: 30px;
   width: 65%;
@@ -278,45 +381,18 @@ nav a:hover {
   transform: scale(1.1);
 }
 
-/* Background Boxes */
-.bg-box1 {
-  position: fixed;
-  bottom: -30%;
-  left: -10%;
-  width: 140%;
-  display: flex;
-  align-items: flex-start;
-  transform: rotate(-10deg);
-  z-index: -1;
-}
-
-.bg-box-left {
-  width: 30%;
-  height: 25vh;
-  margin-top: 18vh;
-  background-color: #efa940;
-}
-
-.bg-box-right {
-  width: 70%;
-  height: 70vh;
-  background-color: #6fc586;
-}
-
-/* Cards Wrapper - vertically centers the cards container */
+/* ========== CARDS ========== */
 .cards-wrapper {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1;
   padding: 0 20px;
-  /* Account for header offset – header is fixed and rotated, but doesn't take space in flow */
 }
 
-/* Cards Container - horizontal scroll, centered */
 .cards-container {
   width: 100%;
   max-width: 1200px;
@@ -333,7 +409,6 @@ nav a:hover {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Custom scrollbar */
 .cards-scroll::-webkit-scrollbar {
   height: 6px;
 }
@@ -348,7 +423,6 @@ nav a:hover {
   border-radius: 10px;
 }
 
-/* Each card */
 .card {
   flex: 0 0 auto;
   scroll-snap-align: start;
@@ -364,7 +438,6 @@ nav a:hover {
   animation-fill-mode: forwards;
 }
 
-/* Staggered animation delays */
 .card:nth-child(1) {
   animation-delay: 0.1s;
 }
@@ -456,4 +529,31 @@ nav a:hover {
   position: relative;
   z-index: 1;
   top: 10px;
+}
+
+/* ========== TEXT STYLES ========== */
+.section-title {
+  font-size: 3rem;
+  margin-top: 2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.section-intro {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.my-message h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.my-message p {
+  font-size: 1.3rem;
+}
+
+.footer-content {
+  color: white;
+  text-align: center;
+  font-size: 1.2rem;
 }
