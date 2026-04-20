@@ -23,8 +23,8 @@
         {% if section.id == "footer" %}
           {% include section.foreground_template %}
         {% else %}
-          {% if section.extra_context %}
-            {% include section.foreground_template with extra=section.extra_context %}
+          {% if section.extra_context and section.extra_context.projects %}
+            {% include section.foreground_template with projects=section.extra_context.projects %}
           {% else %}
             {% include section.foreground_template %}
           {% endif %}
