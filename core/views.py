@@ -37,7 +37,20 @@ def index(request):
             "left_color": "#2a9d8f",
             "right_color": "#e9c46a",
             "foreground_template": "core/partials/foreground.html",
-            "extra_context": None,
+            "projects": [
+                {
+                    "title": "Watercolor Painting",
+                    "description": "Abstract landscapes and portraits",
+                },
+                {
+                    "title": "Cycling",
+                    "description": "Road and mountain biking in the Pacific Northwest",
+                },
+                {
+                    "title": "Jazz Guitar",
+                    "description": "Playing standards with local groups",
+                },
+            ],
         },
         {
             "id": "videos",
@@ -46,7 +59,20 @@ def index(request):
             "left_color": "#e76f51",
             "right_color": "#f4a261",
             "foreground_template": "core/partials/foreground.html",
-            "extra_context": None,
+            "projects": [
+                {
+                    "title": "Demo Reel 2025",
+                    "description": "Motion graphics and editing showcase",
+                },
+                {
+                    "title": "Coding Tutorial",
+                    "description": "Building a Django portfolio step by step",
+                },
+                {
+                    "title": "Live Performance",
+                    "description": "Jazz trio at The Velvet Note",
+                },
+            ],
         },
         {
             "id": "footer",
