@@ -292,11 +292,11 @@ img.bg-image::before {
 
 /* ========== SLIDE ANIMATIONS ========== */
 .view-section.exit-up {
-  animation: slideUp 0.5s forwards;
+  animation: slideUp 1.15s forwards;
 }
 
 .view-section.exit-down {
-  animation: slideDown 0.5s forwards;
+  animation: slideDown 1.15s forwards;
 }
 
 @keyframes slideUp {

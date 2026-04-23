@@ -11,6 +11,30 @@ def index(request):
         {"title": "Project 5", "description": "Description here"},
     ]
 
+    # --- NEW: random blog posts ---
+    blog_posts = [
+        {
+            "title": "Why I switched to Django",
+            "description": "A story about productivity and Python magic.",
+        },
+        {
+            "title": "Watercolor and Code",
+            "description": "Finding creativity in both art and programming.",
+        },
+        {
+            "title": "Cycling through the Cascades",
+            "description": "Adventures on two wheels in the Pacific Northwest.",
+        },
+        {
+            "title": "Jazz Improv for Developers",
+            "description": "Lessons from music that apply to writing clean code.",
+        },
+        {
+            "title": "My Favourite VS Code Extensions",
+            "description": "Tools that make me more productive every day.",
+        },
+    ]
+
     sections = [
         {
             "id": "home",
@@ -74,6 +98,17 @@ def index(request):
                 },
             ],
         },
+        # --- NEW BLOG SECTION ---
+        {
+            "id": "blog",
+            "title": "Blog",
+            "bg_image": settings.STATIC_URL
+            + "bgimage/blog.jpg",  # make sure this file exists or use a different one
+            "left_color": "#8ec07c",  # soft green
+            "right_color": "#3c6e71",  # muted teal
+            "foreground_template": "core/partials/foreground.html",
+            "projects": blog_posts,  # directly passed as projects
+        },
         {
             "id": "footer",
             "title": "Footer",
@@ -91,6 +126,7 @@ def index(request):
             {"title": "PROJECTS", "url": "#projects", "external": False},
             {"title": "INTERESTS", "url": "#interests", "external": False},
             {"title": "VIDEOS", "url": "#videos", "external": False},
+            {"title": "BLOG", "url": "#blog", "external": False},  # new nav link
             {"title": "GIT", "url": "https://github.com/annynm", "external": True},
             {"title": "RESUME", "url": "/resume/", "external": False},
         ],
