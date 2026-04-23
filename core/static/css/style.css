@@ -284,7 +284,6 @@ img.bg-image::before {
 .foreground-content {
   text-align: center;
   color: white;
-  max-width: 800px;
   width: 100%;
   padding: 2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -381,7 +380,7 @@ nav a:hover {
   transform: scale(1.1);
 }
 
-/* ========== CARDS ========== */
+/* ========== CARDS (original) ========== */
 .cards-wrapper {
   position: relative;
   width: 100%;
@@ -556,4 +555,131 @@ nav a:hover {
   color: white;
   text-align: center;
   font-size: 1.2rem;
+}
+
+/* ========== NEW CAROUSEL STYLES (only changes below) ========== */
+/* 
+   These styles override the original .cards-wrapper, .cards-scroll, etc.
+   to enable 90% width, hide scrollbars, and add arrow buttons.
+*/
+
+/* Make the carousel take 90% of viewport width */
+.carousel-wrapper {
+  position: relative;
+  width: 90vw;
+  /* 90% of viewport width */
+  max-width: none;
+  /* remove any max-width restriction */
+  margin: 0 auto;
+  overflow: visible;
+  /* allow arrows to extend outside */
+}
+
+/* Override original .cards-wrapper to remove side padding and overflow hidden */
+.cards-wrapper {
+  overflow: hidden !important;
+  width: 100% !important;
+  padding: 0 !important;
+  /* removes the original 0 20px padding */
+}
+
+/* Ensure container doesn't introduce extra spacing */
+.cards-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Remove scrollbars and snap behavior – rotation is JavaScript driven */
+.cards-scroll {
+  display: flex;
+  gap: 24px;
+  overflow-x: visible !important;
+  scroll-snap-type: none !important;
+  padding: 20px 0 !important;
+  /* keep vertical padding, remove horizontal */
+  transition: none;
+}
+
+/* Card width consistency */
+.card {
+  flex: 0 0 auto;
+  width: 260px;
+  /* keep existing animations */
+}
+
+/* Centered mode for few items (applied by JS) */
+.cards-scroll.centered-mode {
+  justify-content: center;
+}
+
+/* Arrow buttons */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(91, 173, 202, 0.85);
+  backdrop-filter: blur(4px);
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-btn:hover {
+  background: #245f34;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-btn-left {
+  left: -20px;
+}
+
+.carousel-btn-right {
+  right: -20px;
+}
+
+/* Disabled state (few items) */
+.carousel-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: grayscale(0.2);
+}
+
+/* No projects message */
+.no-projects {
+  color: white;
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 2rem;
+}
+
+/* Responsive arrows */
+@media (max-width: 700px) {
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.5rem;
+  }
+
+  .carousel-btn-left {
+    left: -12px;
+  }
+
+  .carousel-btn-right {
+    right: -12px;
+  }
 }

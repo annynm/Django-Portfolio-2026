@@ -1,17 +1,21 @@
 {% load static %}
-<div class="cards-wrapper">
-  <div class="cards-container">
-    <div class="cards-scroll">
-      {% for project in projects %}
-      <article class="card">
-        <div class="card-inner">
-          <h3>{{ project.title }}</h3>
-          <p>{{ project.description }}</p>
-        </div>
-      </article>
-      {% empty %}
-      <p>No projects yet.</p>
-      {% endfor %}
+<div class="carousel-wrapper">
+  <button class="carousel-btn carousel-btn-left" aria-label="Previous projects">❮</button>
+  <div class="cards-wrapper">
+    <div class="cards-container">
+      <div class="cards-scroll">
+        {% for project in projects %}
+        <article class="card">
+          <div class="card-inner">
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.description }}</p>
+          </div>
+        </article>
+        {% empty %}
+        <p class="no-projects">No projects yet.</p>
+        {% endfor %}
+      </div>
     </div>
   </div>
+  <button class="carousel-btn carousel-btn-right" aria-label="Next projects">❯</button>
 </div>

@@ -1,20 +1,16 @@
+// ========== SECTION SCROLL ==========
 (function() {
-  const ANIMATION_DURATION = 500; // match CSS animation (0.5s)
-
   const sections = document.querySelectorAll(".view-section");
   if (!sections.length) return;
 
   let currentIndex = 0;
   let isAnimating = false;
 
-  // Initialize section styles & active class
   sections.forEach((section, idx) => {
     section.style.visibility = "visible";
     section.style.opacity = "1";
     section.style.zIndex = idx === currentIndex ? "10" : "1";
-    if (idx === currentIndex) {
-      section.classList.add("active");
-    }
+    if (idx === currentIndex) section.classList.add("active");
   });
 
   function transitionTo(newIndex) {
@@ -27,71 +23,118 @@
     const newSection = sections[newIndex];
     const goingDown = newIndex > currentIndex;
 
-    // Prepare z-index for crossfade
     newSection.style.zIndex = "5";
     oldSection.style.zIndex = "10";
-
-    // Add exit animation class on old section
     oldSection.classList.add(goingDown ? "exit-up" : "exit-down");
 
-    // When the CSS animation ends:
     function onAnimEnd() {
-      // Clean up classes and reset z-index
       oldSection.classList.remove("exit-up", "exit-down", "active");
       oldSection.style.zIndex = "1";
       newSection.classList.add("active");
       newSection.style.zIndex = "10";
-
       currentIndex = newIndex;
       isAnimating = false;
-
-      // Update URL hash to current section
       history.pushState(null, "", `#${newSection.id}`);
-
       oldSection.removeEventListener("animationend", onAnimEnd);
+
+      // Notify carousels in the newly active section to recalculate layout
+      const event = new CustomEvent("sectionActivated", {
+        detail: { section: newSection },
+      });
+      document.dispatchEvent(event);
     }
     oldSection.addEventListener("animationend", onAnimEnd);
   }
 
-  // === GSAP OBSERVER with horizontal scroll filtering ===
-  Observer.create({
-    type: "wheel,touch,pointer",
-    onDown: (e) => {
-      // Only trigger if vertical movement is dominant (ignore horizontal scroll)
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      transitionTo(currentIndex + 1);
-    },
-    onUp: (e) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      transitionTo(currentIndex - 1);
-    },
-    tolerance: 10,
-    preventDefault: true,
-  });
+  // ========== WHEEL ==========
+  // Returns true if the event originates inside an active overflow carousel
+  function isCarouselWheelHorizontal(e) {
+    const wrapper = e.target.closest(".carousel-wrapper");
+    if (!wrapper) return false;
+    // Only intercept dominant horizontal wheel events
+    return Math.abs(e.deltaX) > Math.abs(e.deltaY);
+  }
 
-  // Anchor-link navigation (click)
+  window.addEventListener(
+    "wheel",
+    (e) => {
+      // Always prevent default to stop browser back/forward gestures
+      e.preventDefault();
+
+      // Let the carousel handle dominant horizontal scroll
+      if (isCarouselWheelHorizontal(e)) return;
+
+      // Ignore events where horizontal movement dominates vertical
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      if (isAnimating) return;
+
+      if (e.deltaY > 0) transitionTo(currentIndex + 1);
+      else if (e.deltaY < 0) transitionTo(currentIndex - 1);
+    },
+    { passive: false },
+  );
+
+  // ========== TOUCH ==========
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  window.addEventListener(
+    "touchstart",
+    (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    "touchend",
+    (e) => {
+      if (isAnimating) return;
+
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = endX - touchStartX;
+      const diffY = endY - touchStartY;
+
+      // Ignore if horizontal swipe is dominant
+      if (Math.abs(diffX) > Math.abs(diffY)) return;
+
+      // Require a minimum vertical distance to trigger
+      if (Math.abs(diffY) < 50) return;
+
+      // Check if touch is inside a carousel in overflow mode
+      const target = e.target.closest(".carousel-wrapper");
+      if (target && target.dataset.overflowMode === "true") return;
+
+      if (diffY < 0) transitionTo(currentIndex + 1);
+      else transitionTo(currentIndex - 1);
+    },
+    { passive: true },
+  );
+
+  // ========== ANCHOR LINKS ==========
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function(e) {
       const targetId = this.getAttribute("href");
-      if (targetId === "#" || !targetId) return;
+      if (!targetId || targetId === "#") return;
       const target = document.querySelector(targetId);
       if (!target) return;
       e.preventDefault();
       const idx = Array.from(sections).indexOf(target);
-      if (idx >= 0) {
-        transitionTo(idx);
-      }
+      if (idx >= 0) transitionTo(idx);
     });
   });
 
-  // On load: if a hash is present, go directly to that section
+  // ========== INITIAL HASH ==========
   if (window.location.hash) {
-    const targetId = window.location.hash.slice(1);
-    const targetSection = document.getElementById(targetId);
+    const targetSection = document.getElementById(
+      window.location.hash.slice(1),
+    );
     if (targetSection) {
       const idx = Array.from(sections).indexOf(targetSection);
-      if (idx >= 0 && idx !== currentIndex) {
-        // Remove active from current and set target active
+      if (idx > 0) {
         sections[currentIndex].classList.remove("active");
         sections[currentIndex].style.zIndex = "1";
         targetSection.classList.add("active");
